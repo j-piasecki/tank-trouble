@@ -2,8 +2,12 @@ import pygame
 import config
 from model import model
 
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
 
 class View:
+
+    # inicjalizuje pygame oraz tworzy ekran i ustawia jego paramtery
     def __init__(self):
         pygame.init()
 
@@ -15,8 +19,10 @@ class View:
         logo = pygame.image.load('images/logo.jpg')
         pygame.display.set_icon(logo)
 
+    # aktuaizuje zmienne elementy ekranu
     def update(self):
-        pygame.draw.rect(self.screen, (255, 0, 0),
+        self.screen.fill(WHITE)
+        pygame.draw.rect(self.screen, RED,
                          (model.player.x, model.player.y, int(model.player.width * config.TILE_SIZE),
                           int(model.player.height * config.TILE_SIZE)))
         pygame.display.update()
