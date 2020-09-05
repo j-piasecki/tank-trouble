@@ -1,9 +1,11 @@
 import pygame
-import config
-from model import model
 from view import View
+from controller.controller import Controller
 
 view = View()
+controller = Controller()
+
+times = [pygame.time.get_ticks(), pygame.time.get_ticks()]
 
 running = True
 while running:
@@ -18,4 +20,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    times[0], times[1] = times[1], pygame.time.get_ticks()
+    delta_time = times[1] - times[0]
+
+    controller.get_pressed_keys(delta_time)
     view.update()
