@@ -1,5 +1,5 @@
 import pygame
-from view import View
+from view.view import View
 from controller.controller import Controller
 
 view = View()
@@ -10,10 +10,6 @@ times = [pygame.time.get_ticks(), pygame.time.get_ticks()]
 running = True
 while running:
     events_list = pygame.event.get()
-
-    # TODO
-    # przeslac liste eventow do kontrolera
-
 
     # Tymaczasowo
     for event in events_list:

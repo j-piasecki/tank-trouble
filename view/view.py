@@ -5,6 +5,7 @@ from model import model
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 
+
 class View:
 
     # inicjalizuje pygame oraz tworzy ekran i ustawia jego paramtery
@@ -16,7 +17,7 @@ class View:
 
         pygame.display.set_caption("Tank Trouble")
 
-        logo = pygame.image.load('images/logo.jpg')
+        logo = pygame.image.load('view/images/logo.jpg')
         pygame.display.set_icon(logo)
 
     # aktuaizuje zmienne elementy ekranu
