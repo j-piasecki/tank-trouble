@@ -2,9 +2,6 @@ import pygame
 import config
 from model import model
 
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-
 
 class View:
 
@@ -22,8 +19,12 @@ class View:
 
     # aktuaizuje zmienne elementy ekranu
     def update(self):
-        self.screen.fill(WHITE)
-        pygame.draw.rect(self.screen, RED,
-                         (model.player.x, model.player.y, int(model.player.width * config.TILE_SIZE),
+        self.screen.fill(config.WHITE)
+
+        pygame.draw.rect(self.screen, config.RED,
+                         (model.player.x * config.TILE_SIZE,
+                          model.player.y * config.TILE_SIZE,
+                          int(model.player.width * config.TILE_SIZE),
                           int(model.player.height * config.TILE_SIZE)))
+
         pygame.display.update()

@@ -1,3 +1,7 @@
 PLAYER_SPEED = 0.5
 PLAYER_SIZE = (0.5, 0.5)
 TILE_SIZE = 80
+
+# colors
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
