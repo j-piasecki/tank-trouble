@@ -3,8 +3,7 @@ from .tank import Tank
 from .map import Map
 
 player = Tank()
-game_map = Map(10, 7)
-
+game_map = Map(100, 70)
 
 def update(delta_time: int):
     pass
