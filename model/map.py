@@ -13,13 +13,13 @@ class Map:
 
             self.blocks = []
 
-            for x in range(height):
+            for x in range(width):
                 self.blocks.append([])
-                for y in range(width):
+                for y in range(height):
                     self.blocks[x].append(True)
         else:
-            self.height = len(blocks)
-            self.width = len(blocks[0])
+            self.width = len(blocks)
+            self.height = len(blocks[0])
 
             self.blocks = blocks
 
@@ -29,14 +29,14 @@ class Map:
         if x < 0 or x >= self.width or y < 0 or y >= self.height:
             return False
 
-        return self.blocks[y][x]
+        return self.blocks[x][y]
 
     def load_map(self):
         maps_names = glob.glob('maps/*.png')
         map_image = pygame.transform.scale(pygame.image.load(random.choice(maps_names)), (self.width, self.height))
         map_pixels = pygame.PixelArray(map_image)
 
-        for x in range(self.height):
-            for y in range(self.width):
-                self.blocks[x][y] = (map_pixels[y, x] == map_image.map_rgb(config.BLACK))
+        for x in range(self.width):
+            for y in range(self.height):
+                self.blocks[x][y] = (map_pixels[x, y] == map_image.map_rgb(config.BLACK))
 
