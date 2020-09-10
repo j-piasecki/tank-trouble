@@ -18,11 +18,21 @@ class View:
         pygame.display.set_icon(logo)
 
         tank = pygame.image.load('view/images/tank.png')
-        self.tank_img = pygame.transform.scale(tank, (config.PLAYER_SIZE[0] * config.TILE_SIZE, config.PLAYER_SIZE[1] * config.TILE_SIZE))
+        self.tank_img = pygame.transform.scale(tank, (config.PLAYER_SIZE[0] * config.TILE_SIZE,
+                                                      config.PLAYER_SIZE[1] * config.TILE_SIZE))
 
     # aktuaizuje zmienne elementy ekranu
     def update(self):
         self.screen.fill(config.WHITE)
+
+        for i in range(model.game_map.height):
+            for j in range(model.game_map.width):
+                if model.game_map.is_passable(j, i):
+                    pygame.draw.rect(self.screen, config.BLACK,
+                                     (j * config.TILE_SIZE,
+                                      i * config.TILE_SIZE,
+                                      config.TILE_SIZE,
+                                      config.TILE_SIZE))
 
         self.screen.blit(self.tank_img, ((model.player.x - config.PLAYER_SIZE[0] / 2) * config.TILE_SIZE,
                                          (model.player.y - config.PLAYER_SIZE[1] / 2) * config.TILE_SIZE))

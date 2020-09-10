@@ -29,7 +29,7 @@ class Map:
         if x < 0 or x >= self.width or y < 0 or y >= self.height:
             return False
 
-        return self.blocks[x][y]
+        return self.blocks[y][x]
 
     def load_map(self):
         maps_names = glob.glob('maps/*.png')
