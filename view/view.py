@@ -17,14 +17,14 @@ class View:
         logo = pygame.image.load('view/images/logo.jpg')
         pygame.display.set_icon(logo)
 
+        tank = pygame.image.load('view/images/tank.png')
+        self.tank_img = pygame.transform.scale(tank, (config.PLAYER_SIZE[0] * config.TILE_SIZE, config.PLAYER_SIZE[1] * config.TILE_SIZE))
+
     # aktuaizuje zmienne elementy ekranu
     def update(self):
         self.screen.fill(config.WHITE)
 
-        pygame.draw.rect(self.screen, config.RED,
-                         (model.player.x * config.TILE_SIZE,
-                          model.player.y * config.TILE_SIZE,
-                          int(model.player.width * config.TILE_SIZE),
-                          int(model.player.height * config.TILE_SIZE)))
+        self.screen.blit(self.tank_img, ((model.player.x - config.PLAYER_SIZE[0] / 2) * config.TILE_SIZE,
+                                         (model.player.y - config.PLAYER_SIZE[1] / 2) * config.TILE_SIZE))
 
         pygame.display.update()
