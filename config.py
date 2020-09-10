@@ -5,3 +5,4 @@ TILE_SIZE = 80
 # colors
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+BLACK = (0, 0, 0)
