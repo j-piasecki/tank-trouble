@@ -13,7 +13,8 @@ class Controller:
             model.move_forward(delta_time)
         elif keys[pygame.K_s]:
             model.move_backward(delta_time)
-        elif keys[pygame.K_a]:
-            model.move_left(delta_time)
+
+        if keys[pygame.K_a]:
+            model.rotate_left(delta_time)
         elif keys[pygame.K_d]:
-            model.move_right(delta_time)
+            model.rotate_right(delta_time)

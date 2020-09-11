@@ -17,9 +17,9 @@ def move_backward(delta_time: int):
     player.move_backward(game_map, delta_time * config.PLAYER_SPEED / config.TILE_SIZE)
 
 
-def move_left(delta_time: int):
-    player.move_left(game_map, delta_time * config.PLAYER_SPEED / config.TILE_SIZE)
+def rotate_left(delta_time: int):
+    player.rotate_left(game_map, delta_time * config.PLAYER_ROTATION_SPEED)
 
 
-def move_right(delta_time: int):
-    player.move_right(game_map, delta_time * config.PLAYER_SPEED / config.TILE_SIZE)
+def rotate_right(delta_time: int):
+    player.rotate_right(game_map, delta_time * config.PLAYER_ROTATION_SPEED)
