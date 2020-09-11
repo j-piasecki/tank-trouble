@@ -34,7 +34,9 @@ class View:
                                       config.TILE_SIZE,
                                       config.TILE_SIZE))
 
-        self.screen.blit(self.tank_img, ((model.player.x - config.PLAYER_SIZE[0] / 2) * config.TILE_SIZE,
+        tmp_tank = pygame.transform.rotate(self.tank_img, -model.player.angle)
+
+        self.screen.blit(tmp_tank, ((model.player.x - config.PLAYER_SIZE[0] / 2) * config.TILE_SIZE,
                                          (model.player.y - config.PLAYER_SIZE[1] / 2) * config.TILE_SIZE))
 
         pygame.display.update()
