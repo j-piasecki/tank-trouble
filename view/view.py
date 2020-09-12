@@ -27,7 +27,7 @@ class View:
 
         for i in range(model.game_map.height):
             for j in range(model.game_map.width):
-                if model.game_map.is_passable(j, i):
+                if model.game_map.is_blocked(j, i):
                     pygame.draw.rect(self.screen, config.BLACK,
                                      (j * config.TILE_SIZE,
                                       i * config.TILE_SIZE,
@@ -35,8 +35,9 @@ class View:
                                       config.TILE_SIZE))
 
         tmp_tank = pygame.transform.rotate(self.tank_img, -model.player.angle)
+        rect = tmp_tank.get_rect()
 
-        self.screen.blit(tmp_tank, ((model.player.x - config.PLAYER_SIZE[0] / 2) * config.TILE_SIZE,
-                                         (model.player.y - config.PLAYER_SIZE[1] / 2) * config.TILE_SIZE))
+        self.screen.blit(tmp_tank, (model.player.x * config.TILE_SIZE - rect.width / 2,
+                                    model.player.y * config.TILE_SIZE - rect.height / 2))
 
         pygame.display.update()
