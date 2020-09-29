@@ -10,21 +10,30 @@ class Client:
         self.address = address
         self.id = id
 
+        self.socket.setblocking(True)
+
         self.thread: Thread = Thread(target=self.loop, args=())
+        self.running = True
 
     def start(self):
-        self.socket.send(bytes(str(self.id), config.ENCODING))
+        self.socket.send(bytes([self.id]))
         self.thread.start()
 
     def loop(self):
-        while True:
-            data = self.socket.recv(3).decode(config.ENCODING)
-            print(data)
+        while self.running:
+            try:
+                data = self.socket.recv(3).decode(config.ENCODING)
+                print(data)
 
-            if len(data) == 0:
-                self.socket.close()
-                print(f"client with id {self.id} disconnected")
-                break
+                if len(data) == 0:
+                    self.stop()
+            except ConnectionResetError:
+                self.stop()
+
+    def stop(self):
+        self.running = False
+        self.socket.close()
+        print(f"client with id {self.id} disconnected")
 
 
 class Server:
@@ -37,37 +46,59 @@ class Server:
         self.running = False
         self.clients = []
 
-        self.thread = Thread(target=self.loop, args=())
+        self.main_thread = Thread(target=self.loop, args=())
+        self.accepting_thread = Thread(target=self.accept_clients, args=())
 
     def start(self):
         self.running = True
-        self.thread.start()
+
+        self.main_thread.start()
+        self.accepting_thread.start()
 
         while self.running:
-            self.accept_client()
+            cmd = input()
 
-    def accept_client(self):
-        (client_socket, address) = self.server_socket.accept()
+            if cmd == "stop":
+                self.running = False
+                self.server_socket.close()
 
-        client = None
+    def accept_clients(self):
+        while self.running:
+            (client_socket, address) = self.server_socket.accept()
 
-        with self.lock:
-            id = len(self.clients)
-            client = Client(client_socket, address, id)
+            client = None
 
-            print(f"client with id: {id} connected from {address}")
+            with self.lock:
+                id = len(self.clients)
+                # find first free slot in the list
+                for i in range(len(self.clients)):
+                    if self.clients[i] is None:
+                        id = i
+                        break
 
-            self.clients.append(client)
+                client = Client(client_socket, address, id)
 
-        client.start()
+                print(f"client with id: {id} connected from {address}")
 
+                # if there is no empty slot, append the client to the list
+                if id == len(self.clients):
+                    self.clients.append(client)
+                else:
+                    self.clients[id] = client
+
+            client.start()
 
     def loop(self):
         while self.running:
             with self.lock:
+                # remove dead inactive clients from list
+                for i in range(len(self.clients)):
+                    if self.clients[i] is not None and not self.clients[i].running:
+                        self.clients[i] = None
+
                 print("update server")
 
-            time.sleep(1)
+            time.sleep(5)
 
 
 if __name__ == "__main__":

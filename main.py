@@ -13,7 +13,7 @@ times = [pygame.time.get_ticks(), pygame.time.get_ticks()]
 clientsock = socket(AF_INET, SOCK_STREAM)
 clientsock.connect((HOST, PORT))
 
-player_id = int(clientsock.recv(1).decode(config.ENCODING))
+player_id = int.from_bytes(clientsock.recv(1), byteorder="big")
 print(f'your id is {player_id}')
 
 running = True
