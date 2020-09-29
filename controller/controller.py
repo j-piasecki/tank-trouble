@@ -21,9 +21,7 @@ class Controller:
         elif keys[pygame.K_d]:
             key_pressed = 'D'
 
-        if not key_pressed:
-            key_pressed = 'None'
+        if key_pressed:
+            key_pressed = key_pressed + '-' + str(player_id)
 
-        key_pressed = key_pressed + '-' + str(player_id) + '-' + str(delta_time)
-
-        sock.send(bytes(key_pressed, encoding=ENCODING))
+            sock.send(bytes(key_pressed, encoding=ENCODING))

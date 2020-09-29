@@ -1,4 +1,5 @@
 import pygame
+import config
 from view.view import View
 from controller.controller import Controller
 from socket import socket, AF_INET, SOCK_STREAM
@@ -10,24 +11,24 @@ controller = Controller()
 times = [pygame.time.get_ticks(), pygame.time.get_ticks()]
 
 clientsock = socket(AF_INET, SOCK_STREAM)
-clientsock.connect(HOST, PORT)
+clientsock.connect((HOST, PORT))
 
-player_id = clientsock.recv(16)
+player_id = int(clientsock.recv(1).decode(config.ENCODING))
 print(f'your id is {player_id}')
 
 running = True
+clock = pygame.time.Clock()
+
 while running:
     events_list = pygame.event.get()
+    delta_time = clock.tick(60)
 
     # Tymaczasowo
     for event in events_list:
         if event.type == pygame.QUIT:
             running = False
 
-    times[0], times[1] = times[1], pygame.time.get_ticks()
-    delta_time = times[1] - times[0]
-
-    controller.get_pressed_keys(delta_time)
+    controller.get_pressed_keys(delta_time, player_id, clientsock)
     view.update()
 
 clientsock.close()
