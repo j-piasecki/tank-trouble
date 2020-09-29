@@ -1,11 +1,19 @@
 import pygame
 from view.view import View
 from controller.controller import Controller
+from socket import socket, AF_INET, SOCK_STREAM
+from config import HOST, PORT
 
 view = View()
 controller = Controller()
 
 times = [pygame.time.get_ticks(), pygame.time.get_ticks()]
+
+clientsock = socket(AF_INET, SOCK_STREAM)
+clientsock.connect(HOST, PORT)
+
+player_id = clientsock.recv(16)
+print(f'your id is {player_id}')
 
 running = True
 while running:
@@ -21,3 +29,5 @@ while running:
 
     controller.get_pressed_keys(delta_time)
     view.update()
+
+clientsock.close()

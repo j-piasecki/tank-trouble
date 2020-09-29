@@ -1,20 +1,29 @@
 import pygame
 from model import model
+from socket import socket
+from config import ENCODING
 
 
 class Controller:
     def update(self, delta_time: int):
         pass
 
-    def get_pressed_keys(self, delta_time: int):
+    def get_pressed_keys(self, delta_time: int, player_id: int, sock: socket):
         keys = pygame.key.get_pressed()
-
+        key_pressed = ''
         if keys[pygame.K_w]:
-            model.move_forward(delta_time)
+            key_pressed = 'W'
         elif keys[pygame.K_s]:
-            model.move_backward(delta_time)
+            key_pressed = 'S'
 
         if keys[pygame.K_a]:
-            model.rotate_left(delta_time)
+            key_pressed = 'A'
         elif keys[pygame.K_d]:
-            model.rotate_right(delta_time)
+            key_pressed = 'D'
+
+        if not key_pressed:
+            key_pressed = 'None'
+
+        key_pressed = key_pressed + '-' + str(player_id) + '-' + str(delta_time)
+
+        sock.send(bytes(key_pressed, encoding=ENCODING))

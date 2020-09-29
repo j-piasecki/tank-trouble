@@ -7,3 +7,8 @@ TILE_SIZE = 10
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
+
+#sockets
+PORT = 50000
+HOST = '127.0.0.1'
+ENCODING = 'utf-8'
