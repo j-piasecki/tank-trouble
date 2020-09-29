@@ -3,7 +3,7 @@ import config
 from view.view import View
 from controller.controller import Controller
 from socket import socket, AF_INET, SOCK_STREAM
-from config import HOST, PORT
+from config import HOST, PORT, ENCODING
 
 view = View()
 controller = Controller()
