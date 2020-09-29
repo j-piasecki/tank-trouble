@@ -2,7 +2,7 @@ import pygame
 from view.view import View
 from controller.controller import Controller
 from socket import socket, AF_INET, SOCK_STREAM
-from config import HOST, PORT
+from config import HOST, PORT, ENCODING
 
 view = View()
 controller = Controller()
@@ -10,9 +10,9 @@ controller = Controller()
 times = [pygame.time.get_ticks(), pygame.time.get_ticks()]
 
 clientsock = socket(AF_INET, SOCK_STREAM)
-clientsock.connect(HOST, PORT)
+clientsock.connect((HOST, PORT))
 
-player_id = clientsock.recv(16)
+player_id = int(clientsock.recv(16).decode())
 print(f'your id is {player_id}')
 
 running = True
