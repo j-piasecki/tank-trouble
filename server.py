@@ -6,6 +6,7 @@ from socket import socket, AF_INET, SOCK_STREAM
 from threading import Thread, Lock
 from model import map, tank
 from utils import convert_key_string_to_dict
+import struct
 
 
 class Client:
@@ -21,6 +22,8 @@ class Client:
             'right': 0,
             'space': 0
         }
+
+        self.positions = []
 
         self.socket.setblocking(True)
 
@@ -39,13 +42,15 @@ class Client:
                 # string s: s[0] = id, s[1] = is_w_pressed, s[2] = is_a_pressed,
                 # s[3] = is_s_pressed, s[4] = is_d_pressed, s[5] = is_space_pressed
                 data = self.socket.recv(6).decode(config.ENCODING)
+                if len(data) == 0:
+                    self.stop()
+                    break
                 (key_pressed, player_id) = convert_key_string_to_dict(data)
                 self.keys = key_pressed
                 print(player_id)
                 print(key_pressed)
 
-                if len(data) == 0:
-                    self.stop()
+
             except ConnectionResetError:
                 self.stop()
 
@@ -124,6 +129,8 @@ class Server:
                     if self.clients[i] is not None and not self.clients[i].running:
                         self.clients[i] = None
 
+                # transaltes key input to player moves
+                positions = []
                 for i in range(len(self.clients)):
                     if self.clients[i] is not None:
                         if self.clients[i].keys["up"] == 1:
@@ -139,6 +146,18 @@ class Server:
                             self.clients[i].player.rotate_left(self.map,
                                                                delta_time * config.PLAYER_ROTATION_SPEED)
 
+                        positions.append({
+                            'id': self.clients[i].id,
+                            'x': self.clients[i].player.x,
+                            'y': self.clients[i].player.y,
+                            'angle': self.clients[i].player.angle
+                        })
+
+                for i in range(len(self.clients)):
+                    if self.clients[i] is not None:
+                        self.clients[i].positions = positions
+
+                print(positions)
                 print("update server")
 
             time.sleep(delta_time)
