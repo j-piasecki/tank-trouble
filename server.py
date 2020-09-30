@@ -47,9 +47,14 @@ class Client:
                     break
                 (key_pressed, player_id) = convert_key_string_to_dict(data)
                 self.keys = key_pressed
-                print(player_id)
-                print(key_pressed)
-
+                # print(player_id)
+                # print(key_pressed)
+                self.socket.send(bytes([0]))
+                for i in range(8):
+                    self.socket.send(struct.pack("i", self.positions[i]["id"]))
+                    self.socket.send(struct.pack("f", self.positions[i]["x"]))
+                    self.socket.send(struct.pack("f", self.positions[i]["y"]))
+                    self.socket.send(struct.pack("f", self.positions[i]["angle"]))
 
             except ConnectionResetError:
                 self.stop()
@@ -129,10 +134,21 @@ class Server:
                     if self.clients[i] is not None and not self.clients[i].running:
                         self.clients[i] = None
 
-                # transaltes key input to player moves
+                # list of dicts of positions of all players
                 positions = []
+                err_id = -1
+                # non existing clinents has ids smaller than zero
+                for i in range(8):
+                    positions.append({
+                        'id': err_id,
+                        'x': 0,
+                        'y': 0,
+                        'angle': 0
+                    })
+                    err_id = err_id - 1
                 for i in range(len(self.clients)):
                     if self.clients[i] is not None:
+                        # transaltes key input to player moves
                         if self.clients[i].keys["up"] == 1:
                             self.clients[i].player.move_forward(self.map,
                                                                 delta_time * config.PLAYER_SPEED / config.TILE_SIZE)
@@ -146,12 +162,12 @@ class Server:
                             self.clients[i].player.rotate_left(self.map,
                                                                delta_time * config.PLAYER_ROTATION_SPEED)
 
-                        positions.append({
+                        positions[i] = {
                             'id': self.clients[i].id,
                             'x': self.clients[i].player.x,
                             'y': self.clients[i].player.y,
                             'angle': self.clients[i].player.angle
-                        })
+                        }
 
                 for i in range(len(self.clients)):
                     if self.clients[i] is not None:

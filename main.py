@@ -45,6 +45,7 @@ while running:
             r = struct.unpack('f', data[i+12:i+16])
             tanks.append((player_id, x, y, r))
 
-    view.update(tanks)
+    print(tanks)
+    #view.update(tanks)
 
 clientsock.close()
