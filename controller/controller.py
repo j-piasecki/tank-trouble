@@ -2,13 +2,14 @@ import pygame
 from model import model
 from socket import socket
 from config import ENCODING
+from typing import List
 
 
 class Controller:
     def update(self, delta_time: int):
         pass
 
-    def get_pressed_keys(self, delta_time: int, player_id: int, sock: socket):
+    def get_pressed_keys(self, delta_time: int, player_id: int, sock: socket) -> List[int]:
         keys = pygame.key.get_pressed()
         key_pressed = ''
         if keys[pygame.K_w]:

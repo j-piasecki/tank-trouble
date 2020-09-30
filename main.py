@@ -4,6 +4,7 @@ from view.view import View
 from controller.controller import Controller
 from socket import socket, AF_INET, SOCK_STREAM
 from config import HOST, PORT, ENCODING
+from utils import convert_keys_to_string
 
 view = View()
 controller = Controller()
@@ -28,7 +29,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    controller.get_pressed_keys(delta_time, player_id, clientsock)
+    clientsock.send(convert_keys_to_string(pygame.key.get_pressed(), player_id).encode(ENCODING))
     view.update()
 
 clientsock.close()
