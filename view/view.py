@@ -22,7 +22,7 @@ class View:
                                                       config.PLAYER_SIZE[1] * config.TILE_SIZE))
 
     # aktuaizuje zmienne elementy ekranu
-    def update(self):
+    def update(self, tanks: list):
         self.screen.fill(config.WHITE)
 
         for i in range(model.game_map.height):

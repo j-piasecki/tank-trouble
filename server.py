@@ -51,10 +51,11 @@ class Client:
                 # print(key_pressed)
                 self.socket.send(bytes([0]))
                 for i in range(8):
-                    self.socket.send(struct.pack("i", self.positions[i]["id"]))
-                    self.socket.send(struct.pack("f", self.positions[i]["x"]))
-                    self.socket.send(struct.pack("f", self.positions[i]["y"]))
-                    self.socket.send(struct.pack("f", self.positions[i]["angle"]))
+                    self.socket.send(struct.pack("i", self.positions[i]["id"])
+                                     + struct.pack("f", self.positions[i]["x"])
+                                     + struct.pack("f", self.positions[i]["y"])
+                                     + struct.pack("f", self.positions[i]["angle"]))
+
 
             except ConnectionResetError:
                 self.stop()
