@@ -14,6 +14,13 @@ class Client:
         self.address = address
         self.id = id
         self.player = tank.Tank()
+        self.keys = {
+            'up': 0,
+            'left': 0,
+            'down': 0,
+            'right': 0,
+            'space': 0
+        }
 
         self.socket.setblocking(True)
 
@@ -33,6 +40,7 @@ class Client:
                 # s[3] = is_s_pressed, s[4] = is_d_pressed, s[5] = is_space_pressed
                 data = self.socket.recv(6).decode(config.ENCODING)
                 (key_pressed, player_id) = convert_key_string_to_dict(data)
+                self.keys = key_pressed
                 print(player_id)
                 print(key_pressed)
 
@@ -108,6 +116,7 @@ class Server:
             client.start(self.map_name)
 
     def loop(self):
+        delta_time = 0.05
         while self.running:
             with self.lock:
                 # remove dead inactive clients from list
@@ -115,9 +124,24 @@ class Server:
                     if self.clients[i] is not None and not self.clients[i].running:
                         self.clients[i] = None
 
+                for i in range(len(self.clients)):
+                    if self.clients[i] is not None:
+                        if self.clients[i].keys["up"] == 1:
+                            self.clients[i].player.move_forward(self.map,
+                                                                delta_time * config.PLAYER_SPEED / config.TILE_SIZE)
+                        if self.clients[i].keys["down"] == 1:
+                            self.clients[i].player.move_backward(self.map,
+                                                                 delta_time * config.PLAYER_SPEED / config.TILE_SIZE)
+                        if self.clients[i].keys["right"] == 1:
+                            self.clients[i].player.rotate_right(self.map,
+                                                                delta_time * config.PLAYER_ROTATION_SPEED)
+                        if self.clients[i].keys["left"] == 1:
+                            self.clients[i].player.rotate_left(self.map,
+                                                               delta_time * config.PLAYER_ROTATION_SPEED)
+
                 print("update server")
 
-            time.sleep(5)
+            time.sleep(delta_time)
 
 
 if __name__ == "__main__":
