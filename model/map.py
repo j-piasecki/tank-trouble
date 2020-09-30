@@ -23,8 +23,6 @@ class Map:
 
             self.blocks = blocks
 
-        self.load_map()
-
     def is_blocked(self, x: int, y: int) -> bool:
         if x < 0 or x >= self.width or y < 0 or y >= self.height:
             return True
@@ -43,3 +41,10 @@ class Map:
             for y in range(self.height):
                 self.blocks[x][y] = (map_pixels[x, y] == map_image.map_rgb(config.BLACK))
 
+    def load_selected_map(self, file_name: str):
+        map_image = pygame.transform.scale(pygame.image.load(f"maps/{file_name}"), (self.width, self.height))
+        map_pixels = pygame.PixelArray(map_image)
+
+        for x in range(self.width):
+            for y in range(self.height):
+                self.blocks[x][y] = (map_pixels[x, y] == map_image.map_rgb(config.BLACK))

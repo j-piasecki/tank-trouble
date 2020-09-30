@@ -1,7 +1,10 @@
 import config
 import time
+import random
+from os import listdir
 from socket import socket, AF_INET, SOCK_STREAM
 from threading import Thread, Lock
+from model import map, tank
 
 
 class Client:
@@ -9,14 +12,15 @@ class Client:
         self.socket = socket
         self.address = address
         self.id = id
+        self.player = tank.Tank()
 
         self.socket.setblocking(True)
 
         self.thread: Thread = Thread(target=self.loop, args=())
         self.running = True
 
-    def start(self):
-        self.socket.send(bytes([self.id]))
+    def start(self, map_name: str):
+        self.socket.send(bytes([self.id]) + bytes(map_name, config.ENCODING))
         self.thread.start()
 
     def loop(self):
@@ -49,6 +53,11 @@ class Server:
         self.main_thread = Thread(target=self.loop, args=())
         self.accepting_thread = Thread(target=self.accept_clients, args=())
 
+        self.map_name = random.choice(listdir("maps/"))
+        self.map = map.Map()
+
+        print(f"loaded map: {self.map_name}")
+
     def start(self):
         self.running = True
 
@@ -61,6 +70,9 @@ class Server:
             if cmd == "stop":
                 self.running = False
                 self.server_socket.close()
+
+                for client in self.clients:
+                    client.socket.close()
 
     def accept_clients(self):
         while self.running:
@@ -86,7 +98,7 @@ class Server:
                 else:
                     self.clients[id] = client
 
-            client.start()
+            client.start(self.map_name)
 
     def loop(self):
         while self.running:
