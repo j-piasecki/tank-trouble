@@ -6,6 +6,7 @@ from controller.controller import Controller
 from socket import socket, AF_INET, SOCK_STREAM
 from config import HOST, PORT, ENCODING
 from utils import convert_keys_to_string
+import struct
 
 view = View()
 controller = Controller()
@@ -34,6 +35,17 @@ while running:
             running = False
 
     clientsock.send(convert_keys_to_string(pygame.key.get_pressed(), player_id).encode(ENCODING))
-    view.update()
+    tanks = []
+    if int.from_bytes(clientsock.recv(1)) == 0:
+        data = clientsock.recv(16 * 8)
+        for i in range(8):
+            player_id = struct.unpack('f', data[i:i+4])
+            x = struct.unpack('f', data[i+4:i+8])
+            y = struct.unpack('f', data[i+8:i+12])
+            r = struct.unpack('f', data[i+12:i+16])
+            tanks.append((player_id, x, y, r))
+
+
+    view.update(tanks)
 
 clientsock.close()
