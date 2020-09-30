@@ -5,6 +5,7 @@ from os import listdir
 from socket import socket, AF_INET, SOCK_STREAM
 from threading import Thread, Lock
 from model import map, tank
+from utils import convert_key_string_to_dict
 
 
 class Client:
@@ -20,14 +21,20 @@ class Client:
         self.running = True
 
     def start(self, map_name: str):
+        # format id: 1byte(int) + file_name: string(file name - config.MAP_NAME_LENGTH(17) bytes)
         self.socket.send(bytes([self.id]) + bytes(map_name, config.ENCODING))
         self.thread.start()
 
     def loop(self):
         while self.running:
             try:
-                data = self.socket.recv(3).decode(config.ENCODING)
-                print(data)
+                # keys data
+                # string s: s[0] = id, s[1] = is_w_pressed, s[2] = is_a_pressed,
+                # s[3] = is_s_pressed, s[4] = is_d_pressed, s[5] = is_space_pressed
+                data = self.socket.recv(6).decode(config.ENCODING)
+                (key_pressed, player_id) = convert_key_string_to_dict(data)
+                print(player_id)
+                print(key_pressed)
 
                 if len(data) == 0:
                     self.stop()
