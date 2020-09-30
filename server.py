@@ -50,11 +50,13 @@ class Client:
                 # print(player_id)
                 # print(key_pressed)
                 self.socket.send(bytes([0]))
+                message = bytes([])
                 for i in range(8):
-                    self.socket.send(struct.pack("i", self.positions[i]["id"])
-                                     + struct.pack("f", self.positions[i]["x"])
-                                     + struct.pack("f", self.positions[i]["y"])
-                                     + struct.pack("f", self.positions[i]["angle"]))
+                    message = message + struct.pack("i", self.positions[i]["id"]) \
+                                     + struct.pack("f", self.positions[i]["x"]) \
+                                     + struct.pack("f", self.positions[i]["y"]) \
+                                     + struct.pack("f", self.positions[i]["angle"])
+                self.socket.send(message)
 
 
             except ConnectionResetError:
