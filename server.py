@@ -35,6 +35,15 @@ class Client:
         self.socket.send(bytes([self.id]) + bytes(map_name, config.ENCODING))
         self.thread.start()
 
+    def send_all_players_info(self):
+        message = bytes([0])
+        for i in range(8):
+            message = message + struct.pack("i", self.positions[i]["id"]) \
+                      + struct.pack("f", self.positions[i]["x"]) \
+                      + struct.pack("f", self.positions[i]["y"]) \
+                      + struct.pack("f", self.positions[i]["angle"])
+        self.socket.send(message)
+
     def loop(self):
         while self.running:
             try:
@@ -47,16 +56,6 @@ class Client:
                     break
                 (key_pressed, player_id) = convert_key_string_to_dict(data)
                 self.keys = key_pressed
-                # print(player_id)
-                # print(key_pressed)
-                self.socket.send(bytes([0]))
-                message = bytes([])
-                for i in range(8):
-                    message = message + struct.pack("i", self.positions[i]["id"]) \
-                                     + struct.pack("f", self.positions[i]["x"]) \
-                                     + struct.pack("f", self.positions[i]["y"]) \
-                                     + struct.pack("f", self.positions[i]["angle"])
-                self.socket.send(message)
 
 
             except ConnectionResetError:
@@ -175,6 +174,7 @@ class Server:
                 for i in range(len(self.clients)):
                     if self.clients[i] is not None:
                         self.clients[i].positions = positions
+                        self.clients[i].send_all_players_info()
 
                 print(positions)
                 print("update server")
