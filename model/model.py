@@ -1,25 +1,18 @@
 import config
+from typing import List
 from .tank import Tank
 from .map import Map
 
-player = Tank()
 game_map = Map(100, 70)
-
-def update(delta_time: int):
-    pass
+tanks = []
 
 
-def move_forward(delta_time: int):
-    player.move_forward(game_map, delta_time * config.PLAYER_SPEED / config.TILE_SIZE)
+def update(delta_time: int, tanks_data: List):
+    new_tanks = []
+    for data in tanks_data:
+        if data[0][0] >= 0:
+            tank = Tank(data[0][0], data[1][0], data[2][0], data[3][0])
+            new_tanks.append(tank)
 
-
-def move_backward(delta_time: int):
-    player.move_backward(game_map, delta_time * config.PLAYER_SPEED / config.TILE_SIZE)
-
-
-def rotate_left(delta_time: int):
-    player.rotate_left(game_map, delta_time * config.PLAYER_ROTATION_SPEED)
-
-
-def rotate_right(delta_time: int):
-    player.rotate_right(game_map, delta_time * config.PLAYER_ROTATION_SPEED)
+    global tanks
+    tanks = new_tanks

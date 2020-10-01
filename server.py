@@ -14,7 +14,7 @@ class Client:
         self.socket = socket
         self.address = address
         self.id = id
-        self.player = tank.Tank()
+        self.player = tank.Tank(id)
         self.keys = {
             'up': 0,
             'left': 0,
