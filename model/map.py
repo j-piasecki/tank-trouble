@@ -12,6 +12,7 @@ class Map:
             self.height = height
 
             self.blocks = []
+            self.spawn_points = []
 
             for x in range(width):
                 self.blocks.append([])
@@ -48,3 +49,6 @@ class Map:
         for x in range(self.width):
             for y in range(self.height):
                 self.blocks[x][y] = (map_pixels[x, y] == map_image.map_rgb(config.BLACK))
+                #sprawdzanie czy punkt jest spawn pointem
+                if map_pixels[x, y] == map_image.map_rgb(config.RED):
+                    self.spawn_points.append((x, y))
