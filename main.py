@@ -35,17 +35,17 @@ while running:
             running = False
 
     clientsock.send(convert_keys_to_string(pygame.key.get_pressed(), player_id).encode(ENCODING))
+
     tanks = []
     if int.from_bytes(clientsock.recv(1), byteorder="big") == 0:
         data = clientsock.recv(16 * 8)
         for i in range(0, 16 * 8, 16):
-            player_id = struct.unpack('i', data[i:i + 4])
+            tank_id = struct.unpack('i', data[i:i + 4])
             x = struct.unpack('f', data[i + 4:i + 8])
             y = struct.unpack('f', data[i + 8:i + 12])
             r = struct.unpack('f', data[i + 12:i + 16])
-            tanks.append((player_id, x, y, r))
+            tanks.append((tank_id, x, y, r))
 
-    print(tanks)
-    # view.update(tanks)
+    view.update(tanks)
 
 clientsock.close()
