@@ -134,7 +134,7 @@ class Server:
             client.start(self.map_name)
 
     def loop(self):
-        delta_time = 0.05
+        delta_time = 0.03
         while self.running:
             with self.lock:
                 # remove dead inactive clients from list

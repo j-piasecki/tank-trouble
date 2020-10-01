@@ -46,6 +46,7 @@ while running:
             r = struct.unpack('f', data[i + 12:i + 16])
             tanks.append((tank_id, x, y, r))
 
-    view.update(tanks)
+    model.update(delta_time, tanks)
+    view.update()
 
 clientsock.close()
