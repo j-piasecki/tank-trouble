@@ -135,7 +135,7 @@ class Server:
             client.start(self.map_name)
 
     def loop(self):
-        delta_time = 0.03
+        delta_time = 0.02
         while self.running:
             with self.lock:
                 # remove dead inactive clients from list
@@ -146,7 +146,7 @@ class Server:
                 # list of dicts of positions of all players
                 positions = []
                 err_id = -1
-                # non existing clinents has ids smaller than zero
+                # non existing clients has ids smaller than zero
                 for i in range(8):
                     positions.append({
                         'id': err_id,
@@ -160,16 +160,16 @@ class Server:
                         # transaltes key input to player moves
                         if self.clients[i].keys["up"] == 1:
                             self.clients[i].player.move_forward(self.map,
-                                                                (1 / delta_time) * config.PLAYER_SPEED / config.TILE_SIZE)
+                                                                delta_time * 1000 * config.PLAYER_SPEED / config.TILE_SIZE)
                         if self.clients[i].keys["down"] == 1:
                             self.clients[i].player.move_backward(self.map,
-                                                                 (1 / delta_time) * config.PLAYER_SPEED / config.TILE_SIZE)
+                                                                 delta_time * 1000 * config.PLAYER_SPEED / config.TILE_SIZE)
                         if self.clients[i].keys["right"] == 1:
                             self.clients[i].player.rotate_right(self.map,
-                                                                (1 / delta_time) * config.PLAYER_ROTATION_SPEED)
+                                                                delta_time * 1000 * config.PLAYER_ROTATION_SPEED)
                         if self.clients[i].keys["left"] == 1:
                             self.clients[i].player.rotate_left(self.map,
-                                                               (1 / delta_time) * config.PLAYER_ROTATION_SPEED)
+                                                               delta_time * 1000 * config.PLAYER_ROTATION_SPEED)
 
                         positions[i] = {
                             'id': self.clients[i].id,
