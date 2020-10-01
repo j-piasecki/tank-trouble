@@ -10,11 +10,12 @@ import struct
 
 
 class Client:
-    def __init__(self, socket: socket, address, id: int):
+    def __init__(self, socket: socket, address, id: int, map: map.Map):
         self.socket = socket
         self.address = address
         self.id = id
-        self.player = tank.Tank(id)
+        self.map = map
+        self.player = tank.Tank(id, map.spawn_points[id][0], map.spawn_points[id][1])
         self.keys = {
             'up': 0,
             'left': 0,
@@ -121,7 +122,7 @@ class Server:
                         id = i
                         break
 
-                client = Client(client_socket, address, id)
+                client = Client(client_socket, address, id, self.map)
 
                 print(f"client with id: {id} connected from {address}")
 
