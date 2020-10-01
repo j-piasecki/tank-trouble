@@ -16,10 +16,12 @@ class View:
 
         logo = pygame.image.load('view/images/logo.jpg')
         pygame.display.set_icon(logo)
-
-        tank = pygame.image.load('view/images/tank.png')
-        self.tank_img = pygame.transform.scale(tank, (config.PLAYER_SIZE[0] * config.TILE_SIZE,
-                                                      config.PLAYER_SIZE[1] * config.TILE_SIZE))
+        self.tank_img = []
+        for i in range(8):
+            tank = pygame.image.load(f'view/images/tank{i}.png')
+            tank = pygame.transform.scale(tank, (config.PLAYER_SIZE[0] * config.TILE_SIZE,
+                                                 config.PLAYER_SIZE[1] * config.TILE_SIZE))
+            self.tank_img.append(tank)
 
     # aktuaizuje zmienne elementy ekranu
     def update(self):
@@ -35,7 +37,7 @@ class View:
                                       config.TILE_SIZE))
 
         for tank in model.tanks:
-            tmp_tank = pygame.transform.rotate(self.tank_img, -tank.angle)
+            tmp_tank = pygame.transform.rotate(self.tank_img[tank.id], -tank.angle)
             rect = tmp_tank.get_rect()
             self.screen.blit(tmp_tank, (tank.x * config.TILE_SIZE - rect.width / 2,
                                         tank.y * config.TILE_SIZE - rect.height / 2))
