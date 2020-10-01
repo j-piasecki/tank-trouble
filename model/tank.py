@@ -6,7 +6,7 @@ from typing import Tuple
 
 
 class Tank:
-    def __init__(self, x: float = config.PLAYER_SIZE[0] * 0.5 + 1, y: float = config.PLAYER_SIZE[1] * 0.5 + 1):
+    def __init__(self, x: float = config.PLAYER_SIZE[0] * 0.5 + 1, y: float = config.PLAYER_SIZE[1] * 0.5 + 1, angle = 0):
         self.width = config.PLAYER_SIZE[0]
         self.height = config.PLAYER_SIZE[1]
 
@@ -20,7 +20,7 @@ class Tank:
             (-self.width / 2, self.height / 2)
         ]
 
-        self.angle = 0
+        self.angle = angle
 
     def move_forward(self, game_map: Map, distance: float):
         vector = utils.rotate_point((0, -distance), self.angle)
