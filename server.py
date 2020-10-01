@@ -44,7 +44,9 @@ class Client:
                           + struct.pack("f", self.positions[i]["y"]) \
                           + struct.pack("f", self.positions[i]["angle"])
             self.socket.send(message)
-        except ConnectionResetError or ConnectionAbortedError:
+        except ConnectionResetError:
+            self.stop()
+        except ConnectionAbortedError:
             self.stop()
 
     def loop(self):
@@ -84,7 +86,8 @@ class Server:
         self.accepting_thread = Thread(target=self.accept_clients, args=())
 
         self.map_name = random.choice(listdir("maps/"))
-        self.map = map.Map()
+        self.map = map.Map(100, 70)
+        self.map.load_selected_map(self.map_name)
 
         print(f"loaded map: {self.map_name}")
 
@@ -156,16 +159,16 @@ class Server:
                         # transaltes key input to player moves
                         if self.clients[i].keys["up"] == 1:
                             self.clients[i].player.move_forward(self.map,
-                                                                delta_time * config.PLAYER_SPEED / config.TILE_SIZE)
+                                                                (1 / delta_time) * config.PLAYER_SPEED / config.TILE_SIZE)
                         if self.clients[i].keys["down"] == 1:
                             self.clients[i].player.move_backward(self.map,
-                                                                 delta_time * config.PLAYER_SPEED / config.TILE_SIZE)
+                                                                 (1 / delta_time) * config.PLAYER_SPEED / config.TILE_SIZE)
                         if self.clients[i].keys["right"] == 1:
                             self.clients[i].player.rotate_right(self.map,
-                                                                delta_time * config.PLAYER_ROTATION_SPEED)
+                                                                (1 / delta_time) * config.PLAYER_ROTATION_SPEED)
                         if self.clients[i].keys["left"] == 1:
                             self.clients[i].player.rotate_left(self.map,
-                                                               delta_time * config.PLAYER_ROTATION_SPEED)
+                                                               (1 / delta_time) * config.PLAYER_ROTATION_SPEED)
 
                         positions[i] = {
                             'id': self.clients[i].id,
@@ -179,8 +182,8 @@ class Server:
                         self.clients[i].positions = positions
                         self.clients[i].send_all_players_info()
 
-                print(positions)
-                print("update server")
+                #print(positions)
+                #print("update server")
 
             time.sleep(delta_time)
 
