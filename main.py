@@ -46,6 +46,6 @@ while running:
             tanks.append((player_id, x, y, r))
 
     print(tanks)
-    # view.update(tanks)
+    view.update(tanks)
 
 clientsock.close()

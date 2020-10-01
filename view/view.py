@@ -21,8 +21,16 @@ class View:
         self.tank_img = pygame.transform.scale(tank, (config.PLAYER_SIZE[0] * config.TILE_SIZE,
                                                       config.PLAYER_SIZE[1] * config.TILE_SIZE))
 
+    def data_to_tanks(self, tanks_data: list) -> list:
+        tanks = []
+        for data in tanks_data:
+            if data[0][0] >= 0:
+                tank = model.Tank(data[1][0], data[2][0], data[3][0])
+                tanks.append(tank)
+        return tanks
+
     # aktuaizuje zmienne elementy ekranu
-    def update(self, tanks: list):
+    def update(self, tanks_data: list):
         self.screen.fill(config.WHITE)
 
         for i in range(model.game_map.height):
@@ -34,10 +42,11 @@ class View:
                                       config.TILE_SIZE,
                                       config.TILE_SIZE))
 
-        tmp_tank = pygame.transform.rotate(self.tank_img, -model.player.angle)
-        rect = tmp_tank.get_rect()
-
-        self.screen.blit(tmp_tank, (model.player.x * config.TILE_SIZE - rect.width / 2,
-                                    model.player.y * config.TILE_SIZE - rect.height / 2))
+        tanks = self.data_to_tanks(tanks_data)
+        for tank in tanks:
+            tmp_tank = pygame.transform.rotate(self.tank_img, -tank.angle)
+            rect = tmp_tank.get_rect()
+            self.screen.blit(tmp_tank, (tank.x * config.TILE_SIZE - rect.width / 2,
+                                        tank.y * config.TILE_SIZE - rect.height / 2))
 
         pygame.display.update()

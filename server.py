@@ -36,13 +36,16 @@ class Client:
         self.thread.start()
 
     def send_all_players_info(self):
-        message = bytes([0])
-        for i in range(8):
-            message = message + struct.pack("i", self.positions[i]["id"]) \
-                      + struct.pack("f", self.positions[i]["x"]) \
-                      + struct.pack("f", self.positions[i]["y"]) \
-                      + struct.pack("f", self.positions[i]["angle"])
-        self.socket.send(message)
+        try:
+            message = bytes([0])
+            for i in range(8):
+                message = message + struct.pack("i", self.positions[i]["id"]) \
+                          + struct.pack("f", self.positions[i]["x"]) \
+                          + struct.pack("f", self.positions[i]["y"]) \
+                          + struct.pack("f", self.positions[i]["angle"])
+            self.socket.send(message)
+        except ConnectionResetError or ConnectionAbortedError:
+            self.stop()
 
     def loop(self):
         while self.running:
