@@ -6,13 +6,14 @@ from typing import Tuple
 
 
 class Tank:
-    def __init__(self, id: -1, x: float = config.PLAYER_SIZE[0] * 0.5 + 1, y: float = config.PLAYER_SIZE[1] * 0.5 + 1, angle = 0):
+    def __init__(self, id: -1, x: float = config.PLAYER_SIZE[0] * 0.5 + 1, y: float = config.PLAYER_SIZE[1] * 0.5 + 1, angle = 0, keys = "0000"):
         self.width = config.PLAYER_SIZE[0]
         self.height = config.PLAYER_SIZE[1]
 
         self.id = id
         self.x = x
         self.y = y
+        self.keys = keys
 
         self._points = [
             (-self.width / 2, -self.height / 2),

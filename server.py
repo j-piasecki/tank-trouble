@@ -43,7 +43,8 @@ class Client:
                 message = message + struct.pack("i", self.positions[i]["id"]) \
                           + struct.pack("f", self.positions[i]["x"]) \
                           + struct.pack("f", self.positions[i]["y"]) \
-                          + struct.pack("f", self.positions[i]["angle"])
+                          + struct.pack("f", self.positions[i]["angle"]) \
+                          + bytes(f"{self.keys['up']}{self.keys['left']}{self.keys['down']}{self.keys['right']}", encoding=config.ENCODING)
             self.socket.send(message)
         except ConnectionResetError:
             self.stop()
