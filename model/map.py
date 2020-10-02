@@ -33,22 +33,12 @@ class Map:
     def get_block_shape(self, x: int, y: int) -> List[Tuple[float, float]]:
         return [(x, y), (x + 1, y), (x + 1, y + 1), (x, y + 1)]
 
-    def load_map(self):
-        maps_names = glob.glob('maps/*.png')
-        map_image = pygame.transform.scale(pygame.image.load(random.choice(maps_names)), (self.width, self.height))
-        map_pixels = pygame.PixelArray(map_image)
-
-        for x in range(self.width):
-            for y in range(self.height):
-                self.blocks[x][y] = (map_pixels[x, y] == map_image.map_rgb(config.BLACK))
-
     def load_selected_map(self, file_name: str):
-        map_image = pygame.transform.scale(pygame.image.load(f"maps/{file_name}"), (self.width, self.height))
-        map_pixels = pygame.PixelArray(map_image)
+        map_image = pygame.image.load(f"maps/{file_name}")
 
         for x in range(self.width):
             for y in range(self.height):
-                self.blocks[x][y] = (map_pixels[x, y] == map_image.map_rgb(config.BLACK))
+                self.blocks[x][y] = (map_image.map_rgb(map_image.get_at((x, y))) == map_image.map_rgb(config.BLACK))
                 #sprawdzanie czy punkt jest spawn pointem
-                if map_pixels[x, y] == map_image.map_rgb(config.RED):
+                if map_image.map_rgb(map_image.get_at((x, y))) == map_image.map_rgb(config.RED):
                     self.spawn_points.append((x, y))
