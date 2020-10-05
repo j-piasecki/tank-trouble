@@ -1,7 +1,8 @@
 import config
-from typing import List
+from typing import List, Tuple
 from .tank import Tank
 from .map import Map
+from .projectile import Projectile
 
 game_map = Map(100, 70)
 tanks = []
@@ -31,5 +32,11 @@ def update_tanks(tanks_data: List):
     tanks = new_tanks
 
 
-def update_projectiles(data: List):
-    pass
+def update_projectiles(data: List[Tuple[float, float]]):
+    new_projectiles = []
+
+    for item in data:
+        new_projectiles.append(Projectile(item[0], item[1], 0))
+
+    global projectiles
+    projectiles = new_projectiles

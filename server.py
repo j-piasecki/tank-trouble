@@ -4,7 +4,7 @@ import random
 from os import listdir
 from socket import socket, AF_INET, SOCK_STREAM
 from threading import Thread, Lock
-from model import map, tank
+from model import map, tank, projectile
 from utils import convert_key_string_to_dict
 import struct
 
@@ -185,6 +185,8 @@ class Server:
                         if self.clients[i].keys["left"] == 1:
                             self.clients[i].player.rotate_left(self.map,
                                                                delta_time * 1000 * config.PLAYER_ROTATION_SPEED)
+                        if self.clients[i].keys["space"] == 1 and time.time() * 1000 - self.clients[i].shoot_time > 1000:
+                            self.shoot(self.clients[i])
 
                         positions[i] = {
                             'id': self.clients[i].id,
@@ -192,6 +194,11 @@ class Server:
                             'y': self.clients[i].player.y,
                             'angle': self.clients[i].player.angle
                         }
+
+                for proj in self.projectiles:
+                    proj.update(self.map, delta_time * 1000)
+
+                self.projectiles = [x for x in self.projectiles if x.exists]
 
                 for i in range(len(self.clients)):
                     if self.clients[i] is not None:
@@ -203,6 +210,11 @@ class Server:
                 #print("update server")
 
             time.sleep(delta_time)
+
+    def shoot(self, client):
+        client.shoot_time = time.time() * 1000
+        proj = projectile.Projectile(client.player.x, client.player.y, client.player.angle)
+        self.projectiles.append(proj)
 
 
 if __name__ == "__main__":
