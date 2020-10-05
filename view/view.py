@@ -42,4 +42,11 @@ class View:
             self.screen.blit(tmp_tank, (tank.x * config.TILE_SIZE - rect.width / 2,
                                         tank.y * config.TILE_SIZE - rect.height / 2))
 
+        for projectile in model.projectiles:
+
+            pygame.draw.circle(self.screen,
+                               config.RED,
+                               (int(projectile.x * config.TILE_SIZE), int(projectile.y * config.TILE_SIZE)),
+                               int(config.PROJECTILE_SIZE * config.TILE_SIZE))
+
         pygame.display.update()
