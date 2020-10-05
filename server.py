@@ -55,10 +55,9 @@ class Client:
     def send_all_projectiles(self, projectiles: list):
         try:
             message = bytes([1])
-            for i in range(8):
-                message = message + struct.pack("i", len(projectiles))
-                for projectile in projectiles:
-                    message = message + struct.pack("f", projectile.x) + struct.pack("f", projectile.y)
+            message = message + struct.pack("i", len(projectiles))
+            for projectile in projectiles:
+                message = message + struct.pack("f", projectile.x) + struct.pack("f", projectile.y)
             self.socket.send(message)
         except ConnectionResetError:
             self.stop()
