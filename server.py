@@ -16,6 +16,7 @@ class Client:
         self.id = id
         self.map = map
         self.player = tank.Tank(id, map.spawn_points[id][0], map.spawn_points[id][1])
+        self.shoot_time = 0
         self.keys = {
             'up': 0,
             'left': 0,
@@ -83,6 +84,7 @@ class Server:
         self.lock = Lock()
         self.running = False
         self.clients = []
+        self.projectiles = []
 
         self.main_thread = Thread(target=self.loop, args=())
         self.accepting_thread = Thread(target=self.accept_clients, args=())

@@ -5,6 +5,7 @@ from .map import Map
 
 game_map = Map(100, 70)
 tanks = []
+projectiles = []
 
 
 def update(delta_time: int):
@@ -28,3 +29,7 @@ def update_tanks(tanks_data: List):
 
     global tanks
     tanks = new_tanks
+
+
+def update_projectiles(data: List):
+    pass
