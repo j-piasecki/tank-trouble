@@ -52,6 +52,19 @@ class Client:
         except ConnectionAbortedError:
             self.stop()
 
+    def send_all_projectiles(self, projectiles: list):
+        try:
+            message = bytes([1])
+            for i in range(8):
+                message = message + struct.pack("i", len(projectiles))
+                for projectile in projectiles:
+                    message = message + struct.pack("f", projectile.x) + struct.pack("f", projectile.y)
+            self.socket.send(message)
+        except ConnectionResetError:
+            self.stop()
+        except ConnectionAbortedError:
+            self.stop()
+
     def loop(self):
         while self.running:
             try:
@@ -185,6 +198,7 @@ class Server:
                     if self.clients[i] is not None:
                         self.clients[i].positions = positions
                         self.clients[i].send_all_players_info()
+                        self.clients[i].send_all_projectiles(self.projectiles)
 
                 #print(positions)
                 #print("update server")
