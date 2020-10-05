@@ -28,17 +28,28 @@ clock = pygame.time.Clock()
 def receiver_thread():
     while running:
         tanks = []
-        if int.from_bytes(clientsock.recv(1), byteorder="big") == 0:
-            data = clientsock.recv(20 * 8)
+        bullets = []
+        data_type = int.from_bytes(clientsock.recv(1), byteorder="big")
+        #tu sie wczytuje czolgi
+        if data_type == 0:
+            tank_data = clientsock.recv(20 * 8)
             for i in range(0, 20 * 8, 20):
-                tank_id = struct.unpack('i', data[i:i + 4])
-                x = struct.unpack('f', data[i + 4:i + 8])
-                y = struct.unpack('f', data[i + 8:i + 12])
-                r = struct.unpack('f', data[i + 12:i + 16])
-                keys = data[i + 16:i + 20].decode(config.ENCODING)
+                tank_id = struct.unpack('i', tank_data[i:i + 4])
+                x = struct.unpack('f', tank_data[i + 4:i + 8])
+                y = struct.unpack('f', tank_data[i + 8:i + 12])
+                r = struct.unpack('f', tank_data[i + 12:i + 16])
+                keys = tank_data[i + 16:i + 20].decode(config.ENCODING)
                 tanks.append((tank_id, x, y, r, keys))
-
-        model.update_tanks(tanks)
+            model.update_tanks(tanks)
+        #tu sie wczytuje pociski
+        elif data_type == 1:
+            bullets_amt = struct.unpack('i', clientsock.recv(4))[0]
+            bullet_data = clientsock.recv(bullets_amt * 8)
+            for i in range(0, bullets_amt * 8, 8):
+                bullet_x = struct.unpack('f', bullet_data[i:i + 4])[0]
+                bullet_y = struct.unpack('f', bullet_data[i + 4:i + 8])[0]
+                bullets.append((bullet_x, bullet_y))
+            model.update_projectiles(bullets)
 
 
 receiver = Thread(target=receiver_thread, args=())
