@@ -76,7 +76,10 @@ class Client:
                 iter_without_change = 0
                 prev = 0
                 while len(data) < 6 and iter_without_change < 10:
-                    data += self.socket.recv(6 - len(data))
+                    try:
+                        data += self.socket.recv(6 - len(data))
+                    except OSError:
+                        self.stop()
                     if len(data) == prev:
                         iter_without_change = iter_without_change + 1
                     else:
