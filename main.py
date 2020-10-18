@@ -28,6 +28,9 @@ clock = pygame.time.Clock()
 def receive_tanks():
     tanks = []
     tank_data = clientsock.recv(20 * 8)
+    if len(tank_data) < 20*8:
+        return
+
     for i in range(0, 20 * 8, 20):
         tank_id = struct.unpack('i', tank_data[i:i + 4])
         x = struct.unpack('f', tank_data[i + 4:i + 8])
@@ -42,6 +45,8 @@ def receive_bullets():
     bullets = []
     bullets_amt = struct.unpack('i', clientsock.recv(4))[0]
     bullet_data = clientsock.recv(bullets_amt * 8)
+    if len(bullet_data) < 20*8:
+        return
     for i in range(0, bullets_amt * 8, 8):
         bullet_x = struct.unpack('f', bullet_data[i:i + 4])[0]
         bullet_y = struct.unpack('f', bullet_data[i + 4:i + 8])[0]
