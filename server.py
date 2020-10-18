@@ -80,6 +80,7 @@ class Client:
                         data += self.socket.recv(6 - len(data))
                     except OSError:
                         self.stop()
+                        return
                     if len(data) == prev:
                         iter_without_change = iter_without_change + 1
                     else:
