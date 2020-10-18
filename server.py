@@ -141,7 +141,7 @@ class Server:
 
     def accept_clients(self):
         while self.running:
-            while self.find_free_slot() >= 2:
+            while self.find_free_slot() >= 8:
                 time.sleep(0.05)
 
             (client_socket, address) = self.server_socket.accept()
