@@ -45,7 +45,7 @@ class Client:
                           + struct.pack("f", self.positions[i]["x"]) \
                           + struct.pack("f", self.positions[i]["y"]) \
                           + struct.pack("f", self.positions[i]["angle"]) \
-                          + bytes(f"{self.keys['up']}{self.keys['left']}{self.keys['down']}{self.keys['right']}", encoding=config.ENCODING)
+                          + bytes(f"{self.positions[i]['keys']['up']}{self.positions[i]['keys']['left']}{self.positions[i]['keys']['down']}{self.positions[i]['keys']['right']}", encoding=config.ENCODING)
             self.socket.send(message)
         except ConnectionResetError:
             self.stop()
@@ -141,17 +141,15 @@ class Server:
 
     def accept_clients(self):
         while self.running:
+            while self.find_free_slot() >= 2:
+                time.sleep(0.05)
+
             (client_socket, address) = self.server_socket.accept()
 
             client = None
 
             with self.lock:
-                id = len(self.clients)
-                # find first free slot in the list
-                for i in range(len(self.clients)):
-                    if self.clients[i] is None:
-                        id = i
-                        break
+                id = self.find_free_slot()
 
                 client = Client(client_socket, address, id, self.map)
 
@@ -164,6 +162,16 @@ class Server:
                     self.clients[id] = client
 
             client.start(self.map_name)
+
+    def find_free_slot(self):
+        id = len(self.clients)
+        # find first free slot in the list
+        for i in range(len(self.clients)):
+            if self.clients[i] is None:
+                id = i
+                break
+
+        return id
 
     def loop(self):
         delta_time = 0.02
@@ -183,7 +191,8 @@ class Server:
                         'id': err_id,
                         'x': 0,
                         'y': 0,
-                        'angle': 0
+                        'angle': 0,
+                        'keys': {'up': 0, 'left': 0, 'down': 0, 'right': 0, 'space': 0}
                     })
                     err_id = err_id - 1
                 for i in range(len(self.clients)):
@@ -208,7 +217,8 @@ class Server:
                             'id': self.clients[i].id,
                             'x': self.clients[i].player.x,
                             'y': self.clients[i].player.y,
-                            'angle': self.clients[i].player.angle
+                            'angle': self.clients[i].player.angle,
+                            'keys': self.clients[i].keys
                         }
 
                 for proj in self.projectiles:
