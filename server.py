@@ -63,6 +63,8 @@ class Client:
             self.stop()
         except ConnectionAbortedError:
             self.stop()
+        except OSError:
+            self.stop()
 
     def loop(self):
         while self.running:
@@ -207,8 +209,6 @@ class Server:
                         self.clients[i].send_all_players_info()
                         self.clients[i].send_all_projectiles(self.projectiles)
 
-                #print(positions)
-                #print("update server")
 
             time.sleep(delta_time)
 
