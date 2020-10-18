@@ -82,11 +82,13 @@ class Client:
                     else:
                         iter_without_change = 0
                         prev = len(data)
+                if len(data) < 6:
+                    self.stop()
+                else:
+                    data = data.decode(config.ENCODING)
 
-                data = data.decode(config.ENCODING)
-
-                (key_pressed, player_id) = convert_key_string_to_dict(data)
-                self.keys = key_pressed
+                    (key_pressed, player_id) = convert_key_string_to_dict(data)
+                    self.keys = key_pressed
 
             except ConnectionResetError:
                 self.stop()
