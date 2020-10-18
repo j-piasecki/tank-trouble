@@ -72,14 +72,21 @@ class Client:
                 # keys data
                 # string s: s[0] = id, s[1] = is_w_pressed, s[2] = is_a_pressed,
                 # s[3] = is_s_pressed, s[4] = is_d_pressed, s[5] = is_space_pressed
-                data = self.socket.recv(6).decode(config.ENCODING)
-                if len(data) == 0:
-                    self.stop()
-                    break
+                data = bytes()
+                iter_without_change = 0
+                prev = 0
+                while len(data) < 6 and iter_without_change < 10:
+                    data += self.socket.recv(6 - len(data))
+                    if len(data) == prev:
+                        iter_without_change = iter_without_change + 1
+                    else:
+                        iter_without_change = 0
+                        prev = len(data)
 
-                if len(data) == 6:
-                    (key_pressed, player_id) = convert_key_string_to_dict(data)
-                    self.keys = key_pressed
+                data = data.decode(config.ENCODING)
+
+                (key_pressed, player_id) = convert_key_string_to_dict(data)
+                self.keys = key_pressed
 
             except ConnectionResetError:
                 self.stop()
@@ -93,7 +100,7 @@ class Client:
 class Server:
     def __init__(self):
         self.server_socket = socket(AF_INET, SOCK_STREAM)
-        self.server_socket.bind((config.HOST, config.PORT))
+        self.server_socket.bind(("", config.PORT))
         self.server_socket.listen(8)
 
         self.lock = Lock()
