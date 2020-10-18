@@ -74,9 +74,10 @@ class Client:
                 if len(data) == 0:
                     self.stop()
                     break
-                (key_pressed, player_id) = convert_key_string_to_dict(data)
-                self.keys = key_pressed
 
+                if len(data) == 6:
+                    (key_pressed, player_id) = convert_key_string_to_dict(data)
+                    self.keys = key_pressed
 
             except ConnectionResetError:
                 self.stop()
