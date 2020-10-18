@@ -23,13 +23,22 @@ model.game_map.load_selected_map(map_name)
 
 running = True
 clock = pygame.time.Clock()
+timeout_limit = 10
 
 
 def receive_tanks():
     tanks = []
-    tank_data = clientsock.recv(20 * 8)
-    if len(tank_data) < 20*8:
-        return
+    tank_data = bytes()
+
+    prev_data_len = data_len = 0
+    time = 0
+    while len(tank_data) < 20 * 8:
+        tank_data += clientsock.recv(20 * 8 - len(tank_data))
+        prev_data_len, data_len = data_len, len(tank_data)
+        if prev_data_len == data_len:
+            time += 1
+        if time >= timeout_limit:
+            return
 
     for i in range(0, 20 * 8, 20):
         tank_id = struct.unpack('i', tank_data[i:i + 4])
@@ -43,10 +52,32 @@ def receive_tanks():
 
 def receive_bullets():
     bullets = []
-    bullets_amt = struct.unpack('i', clientsock.recv(4))[0]
-    bullet_data = clientsock.recv(bullets_amt * 8)
-    if len(bullet_data) < bullets_amt*8:
-        return
+    bullets_amt_data = bytes()
+    prev_data_len = data_len = 0
+    time = 0
+    while len(bullets_amt_data) < 4:
+        bullets_amt_data += clientsock.recv(4 - len(bullets_amt_data))
+
+        prev_data_len, data_len = data_len, len(bullets_amt_data)
+        if prev_data_len == data_len:
+            time += 1
+        if time >= timeout_limit:
+            return
+
+    bullets_amt = struct.unpack('i', bullets_amt_data)[0]
+    bullet_data = bytes()
+
+    prev_data_len = data_len = 0
+    time = 0
+    while len(bullet_data) < bullets_amt * 8:
+        bullet_data += clientsock.recv(bullets_amt * 8 - len(bullet_data))
+
+        prev_data_len, data_len = data_len, len(bullet_data)
+        if prev_data_len == data_len:
+            time += 1
+        if time >= timeout_limit:
+            return
+
     for i in range(0, bullets_amt * 8, 8):
         bullet_x = struct.unpack('f', bullet_data[i:i + 4])[0]
         bullet_y = struct.unpack('f', bullet_data[i + 4:i + 8])[0]
