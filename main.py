@@ -45,7 +45,7 @@ def receive_bullets():
     bullets = []
     bullets_amt = struct.unpack('i', clientsock.recv(4))[0]
     bullet_data = clientsock.recv(bullets_amt * 8)
-    if len(bullet_data) < 20*8:
+    if len(bullet_data) < bullets_amt*8:
         return
     for i in range(0, bullets_amt * 8, 8):
         bullet_x = struct.unpack('f', bullet_data[i:i + 4])[0]
